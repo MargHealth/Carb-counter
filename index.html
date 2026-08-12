@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f6f1">
+<title>My Carb, Protein & Fasting Tracker</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--bg:#f7f6f1;--card:#fff;--text:#242424;--muted:#6c6c6c;--line:#e5e1d8;--accent:#326b5c;--soft:#eef3f0;--danger:#9b3d3d}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+main{max-width:760px;margin:auto;padding:16px 16px 70px} h1{font-size:1.55rem;margin:5px 0}.sub{color:var(--muted);margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+h2{font-size:1.18rem;margin:0 0 10px}.grid2,.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{border:1px solid var(--line);border-radius:14px;padding:12px}.metric span{font-size:.9rem;color:var(--muted)}.metric b{display:block;font-size:1.35rem;margin-top:3px}
+label{display:block;font-weight:650;margin:10px 0 5px}input,button{width:100%;padding:12px;font-size:1rem;border:1px solid #cbc5ba;border-radius:12px;background:#fff}
+button{background:var(--accent);color:#fff;border:0;font-weight:750;margin-top:12px;cursor:pointer}.secondary{background:#ece9e1;color:#222}.smallbtn{width:auto;margin:0;padding:9px 11px}
+.dateRow{display:flex;gap:8px;align-items:end}.dateRow>div{flex:1}.goalbar{height:9px;background:#ece9e1;border-radius:8px;overflow:hidden;margin-top:7px}.goalbar div{height:100%;background:var(--accent);width:0}
+.hint,.small{color:var(--muted);font-size:.88rem}.entry{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:11px 0}.entry:first-child{border-top:0}
+.time{font-weight:800;min-width:76px}.food{flex:1}.food small{display:block;color:var(--muted);margin-top:3px;line-height:1.35}.delete{width:auto;background:#fff;color:var(--danger);border:1px solid #e1c7c7;margin:0;padding:7px 9px}
+.pill{display:inline-block;background:var(--soft);padding:7px 10px;border-radius:999px;margin:3px 4px 3px 0;font-size:.9rem}
+.fav{display:flex;gap:7px;flex-wrap:wrap}.fav button{width:auto;margin:0;background:var(--soft);color:#222;padding:9px 11px}
+.notice{padding:10px;border-radius:12px;background:var(--soft);margin-top:10px}.row{display:flex;gap:8px}.row>*{flex:1}
+footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:18px}
+</style>
+</head>
+<body><main>
+<h1>My Carb, Protein & Fasting Tracker</h1>
+<div class="sub">18:6 fasting • carbs • fiber • net carbs • protein</div>
+
+<div class="card">
+ <div class="dateRow"><button class="secondary smallbtn" id="prev">‹</button><div><label>Day</label><input id="date" type="date"></div><button class="secondary smallbtn" id="next">›</button></div>
+</div>
+
+<div class="card">
+<h2>My Eating Window</h2>
+<div class="grid2">
+ <div class="metric"><span>First food</span><b id="firstFood">—</b></div>
+ <div class="metric"><span>Last food</span><b id="lastFood">—</b></div>
+</div>
+<div id="windowNote" class="notice">No foods logged yet today.</div>
+<div class="hint" style="margin-top:8px">Your 18:6 plan aims for an eating window of 6 hours or less. The app uses your first and last logged food times.</div>
+</div>
+
+<div class="card">
+<h2>Today's Nutrition</h2>
+<div class="summary">
+ <div class="metric"><span>Total Carbs</span><b id="carbSum">0 g</b></div>
+ <div class="metric"><span>Fiber</span><b id="fiberSum">0 g</b></div>
+ <div class="metric"><span>Net Carbs</span><b id="netSum">0 g</b></div>
+ <div class="metric"><span>Protein</span><b id="proteinSum">0 g</b></div>
+</div>
+<div style="margin-top:12px"><span class="small">Net-carb goal: <b id="netGoalLabel"></b></span><div class="goalbar"><div id="netBar"></div></div></div>
+<div style="margin-top:10px"><span class="small">Protein goal: <b id="proteinGoalLabel"></b></span><div class="goalbar"><div id="proteinBar"></div></div></div>
+</div>
+
+<div class="card">
+<h2>Quick Add Favorites</h2>
+<div id="favorites" class="fav"></div>
+<div class="hint" style="margin-top:8px">After you save a food as a favorite, one tap fills in its nutrition information.</div>
+</div>
+
+<div class="card">
+<h2>Add Food</h2>
+<label>Time eaten</label><input id="time" type="time">
+<label>Food</label><input id="food" placeholder="Example: Greek yogurt">
+<div class="grid2">
+ <div><label>Total carbs (g)</label><input id="carbs" type="number" inputmode="decimal" min="0" step=".1"></div>
+ <div><label>Fiber (g)</label><input id="fiber" type="number" inputmode="decimal" min="0" step=".1"></div>
+ <div><label>Protein (g)</label><input id="protein" type="number" inputmode="decimal" min="0" step=".1"></div>
+ <div><label>Net carbs</label><input id="netPreview" value="0 g" disabled></div>
+</div>
+<button id="add">Add Food</button>
+<button id="saveFav" class="secondary">Save as Favorite</button>
+</div>
+
+<div class="card"><h2>Food Log</h2><div id="entries"></div></div>
+
+<div class="card">
+<h2>Goals & Settings</h2>
+<div class="grid2">
+ <div><label>Daily net-carb goal (g)</label><input id="netGoal" type="number" min="0"></div>
+ <div><label>Daily protein goal (g)</label><input id="proteinGoal" type="number" min="0"></div>
+</div>
+<button id="saveGoals">Save Goals</button>
+<div class="hint">You can change these goals anytime. No goal is prescribed by the app.</div>
+</div>
+
+<div class="card">
+<button class="secondary" id="export">Export My Data</button>
+<button class="secondary" id="clear">Clear This Day</button>
+<div class="hint">Your log stays in this browser on this device. Export periodically for backup.</div>
+</div>
+<footer>Personal tracking tool only; it does not provide medical or nutrition advice.</footer>
+
+<script>
+const $=id=>document.getElementById(id), KEY="carbFastingTracker.v2";
+let db=JSON.parse(localStorage.getItem(KEY)||'{"days":{},"favorites":[],"settings":{"netGoal":50,"proteinGoal":80}}');
+db.days ||= {}; db.favorites ||= []; db.settings ||= {netGoal:50,proteinGoal:80};
+
+function iso(d=new Date()){let y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),x=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${x}`}
+function nowTime(){let d=new Date();return `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`}
+function n(v){return Math.max(0,parseFloat(v)||0)} function r(v){return Math.round(v*10)/10} function net(c,f){return Math.max(0,r(c-f))}
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function entries(){return db.days[$("date").value]||[]}
+function fmt(t){if(!t)return"—";let [h,m]=t.split(":").map(Number),ap=h>=12?"PM":"AM";h=h%12||12;return `${h}:${String(m).padStart(2,"0")} ${ap}`}
+function mins(t){let [h,m]=t.split(":").map(Number);return h*60+m}
+function esc(s){return String(s).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]))}
+
+function render(){
+ let es=[...entries()].sort((a,b)=>a.time.localeCompare(b.time)), c=0,f=0,p=0;
+ es.forEach(e=>{c+=e.carbs;f+=e.fiber;p+=e.protein}); c=r(c);f=r(f);p=r(p);
+ $("carbSum").textContent=c+" g";$("fiberSum").textContent=f+" g";$("netSum").textContent=net(c,f)+" g";$("proteinSum").textContent=p+" g";
+ let ng=n(db.settings.netGoal),pg=n(db.settings.proteinGoal);
+ $("netGoalLabel").textContent=ng?`${net(c,f)} / ${ng} g`:`not set`; $("proteinGoalLabel").textContent=pg?`${p} / ${pg} g`:`not set`;
+ $("netBar").style.width=ng?Math.min(100,net(c,f)/ng*100)+"%":"0%"; $("proteinBar").style.width=pg?Math.min(100,p/pg*100)+"%":"0%";
+ $("netGoal").value=ng||"";$("proteinGoal").value=pg||"";
+ if(es.length){
+   $("firstFood").textContent=fmt(es[0].time);$("lastFood").textContent=fmt(es[es.length-1].time);
+   let span=mins(es[es.length-1].time)-mins(es[0].time); if(span<0)span+=1440;
+   let hr=Math.floor(span/60),mi=span%60;
+   $("windowNote").textContent=es.length===1?"Eating window started.":`Eating window so far: ${hr} hr ${mi} min ${span<=360?"✓ Within 6 hours":"• Over 6 hours"}`;
+ }else{$("firstFood").textContent="—";$("lastFood").textContent="—";$("windowNote").textContent="No foods logged yet today."}
+ let box=$("entries");box.innerHTML="";
+ if(!es.length)box.innerHTML='<div class="small">No foods logged for this day yet.</div>';
+ es.forEach(e=>{let row=document.createElement("div");row.className="entry";
+   row.innerHTML=`<div class="time">${fmt(e.time)}</div><div class="food"><strong>${esc(e.food)}</strong><small>${e.carbs}g carbs • ${e.fiber}g fiber • ${net(e.carbs,e.fiber)}g net • ${e.protein}g protein</small></div>`;
+   let b=document.createElement("button");b.className="delete";b.textContent="Delete";b.onclick=()=>del(e.id);row.appendChild(b);box.appendChild(row);
+ });
+ let fav=$("favorites");fav.innerHTML="";
+ if(!db.favorites.length)fav.innerHTML='<span class="small">No favorites saved yet.</span>';
+ db.favorites.forEach((x,i)=>{let b=document.createElement("button");b.textContent=x.food;b.onclick=()=>fillFav(i);fav.appendChild(b)});
+}
+function preview(){$("netPreview").value=net(n($("carbs").value),n($("fiber").value))+" g"}
+function getForm(){return {food:$("food").value.trim(),time:$("time").value||nowTime(),carbs:r(n($("carbs").value)),fiber:r(n($("fiber").value)),protein:r(n($("protein").value))}}
+function clearForm(){["food","carbs","fiber","protein"].forEach(x=>$(x).value="");$("time").value=nowTime();preview()}
+function add(){let e=getForm();if(!e.food)return alert("Please enter a food name.");if(e.fiber>e.carbs&&!confirm("Fiber is higher than total carbs. Add it anyway?"))return;
+ e.id=crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random());let d=$("date").value;db.days[d] ||= [];db.days[d].push(e);save();clearForm();render()}
+function del(id){let d=$("date").value;db.days[d]=(db.days[d]||[]).filter(x=>x.id!==id);if(!db.days[d].length)delete db.days[d];save();render()}
+function fillFav(i){let x=db.favorites[i];$("food").value=x.food;$("carbs").value=x.carbs;$("fiber").value=x.fiber;$("protein").value=x.protein;$("time").value=nowTime();preview();$("food").scrollIntoView({behavior:"smooth",block:"center"})}
+function favorite(){let x=getForm();if(!x.food)return alert("Enter a food first.");let old=db.favorites.findIndex(f=>f.food.toLowerCase()===x.food.toLowerCase());let data={food:x.food,carbs:x.carbs,fiber:x.fiber,protein:x.protein};if(old>=0)db.favorites[old]=data;else db.favorites.push(data);save();render();alert("Favorite saved.")}
+
+$("date").value=iso();$("time").value=nowTime();
+["carbs","fiber"].forEach(x=>$(x).addEventListener("input",preview));
+$("add").onclick=add;$("saveFav").onclick=favorite;
+$("date").onchange=render;
+$("prev").onclick=()=>{let d=new Date($("date").value+"T12:00");d.setDate(d.getDate()-1);$("date").value=iso(d);render()};
+$("next").onclick=()=>{let d=new Date($("date").value+"T12:00");d.setDate(d.getDate()+1);$("date").value=iso(d);render()};
+$("saveGoals").onclick=()=>{db.settings.netGoal=r(n($("netGoal").value));db.settings.proteinGoal=r(n($("proteinGoal").value));save();render()};
+$("clear").onclick=()=>{let d=$("date").value;if((db.days[d]||[]).length&&confirm("Clear all foods for this day?")){delete db.days[d];save();render()}};
+$("export").onclick=()=>{let blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="my-carb-fasting-tracker-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
+if("serviceWorker"in navigator)navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+render();
+</script></main></body></html>
