@@ -2,483 +2,1480 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f7f6f1">
-
 <title>My Carb, Protein & Fasting Tracker</title>
-
 <link rel="manifest" href="manifest.json">
 
 <style>
-:root {
-  --bg: #f7f6f1;
-  --card: #ffffff;
-  --text: #242424;
-  --muted: #6c6c6c;
-  --line: #e5e1d8;
-  --accent: #326b5c;
-  --soft: #eef3f0;
-  --danger: #9b3d3d;
+:root{
+  --bg:#f7f6f1;
+  --card:#ffffff;
+  --text:#242424;
+  --muted:#6c6c6c;
+  --line:#e5e1d8;
+  --accent:#326b5c;
+  --soft:#eef3f0;
+  --danger:#9b3d3d;
 }
- 
-
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 }
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+main{
+  max-width:760px;
+  margin:auto;
+  padding:16px 16px 70px;
 }
- * {
-  box-sizing: border-box;
+h1{
+  font-size:1.55rem;
+  margin:5px 0;
 }
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+.sub{
+  color:var(--muted);
+  margin-bottom:14px;
 }
-
-main {
-  max-width: 760px;
-  margin: auto;
-  padding: 16px 16px 70px;
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  margin:12px 0;
+  box-shadow:0 2px 8px rgba(0,0,0,.03);
 }
-
-h1 {
-  font-size: 1.55rem;
-  margin: 5px 0;
+h2{
+  font-size:1.18rem;
+  margin:0 0 10px;
 }
-
-.sub {
-  color: var(--muted);
-  margin-bottom: 14px;
+.grid2,.summary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 16px;
-  margin: 12px 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,.03);
+.grid3{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
 }
-
-h2 {
-  font-size: 1.18rem;
-  margin: 0 0 10px;
+.metric{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
 }
-
-.grid2,
-.summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+.metric span{
+  font-size:.9rem;
+  color:var(--muted);
 }
-
-.metric {
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 12px;
+.metric b{
+  display:block;
+  font-size:1.35rem;
+  margin-top:3px;
 }
-
-.metric span {
-  font-size: .9rem;
-  color: var(--muted);
+label{
+  display:block;
+  font-weight:650;
+  margin:10px 0 5px;
 }
-
-.metric b {
-  display: block;
-  font-size: 1.35rem;
-  margin-top: 3px;
+input,select,button{
+  width:100%;
+  padding:12px;
+  font-size:1rem;
+  border:1px solid #cbc5ba;
+  border-radius:12px;
+  background:#fff;
 }
-
-label {
-  display: block;
-  font-weight: 650;
-  margin: 10px 0 5px;
+button{
+  background:var(--accent);
+  color:#fff;
+  border:0;
+  font-weight:750;
+  margin-top:12px;
+  cursor:pointer;
 }
-
-input,
-button {
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
-  border: 1px solid #cbc5ba;
-  border-radius: 12px;
-  background: #fff;
+button.secondary{
+  background:#ece9e2;
+  color:var(--text);
 }
-
-button {
-  background: var(--accent);
-  color: #fff;
-  border: 0;
-  font-weight: 750;
-  margin-top: 12px;
-  cursor: pointer;
+button.danger{
+  background:var(--danger);
 }
-
-.secondary {
-  background: #ece9e1;
-  color: var(--text);
+.small{
+  font-size:.88rem;
+  color:var(--muted);
 }
-
-.danger {
-  background: var(--danger);
+.food-row{
+  border-top:1px solid var(--line);
+  padding:12px 0;
 }
-
-.row {
-  display: flex;
-  gap: 8px;
+.food-row:first-child{
+  border-top:0;
 }
-
-.row > * {
-  flex: 1;
+.food-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
 }
-
-.food-item {
-  border-top: 1px solid var(--line);
-  padding: 11px 0;
+.food-name{
+  font-weight:750;
 }
-
-.food-item:first-child {
-  border-top: 0;
+.food-details{
+  color:var(--muted);
+  font-size:.92rem;
+  margin-top:4px;
 }
-
-.food-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+.delete-button{
+  width:auto;
+  padding:6px 10px;
+  margin:0;
+  background:transparent;
+  color:var(--danger);
+  border:1px solid #d8b7b7;
 }
-
-.food-name {
-  font-weight: 750;
+.hidden{
+  display:none;
 }
-
-.food-time {
-  color: var(--muted);
-  font-size: .9rem;
+.notice{
+  background:var(--soft);
+  border-radius:12px;
+  padding:10px;
+  margin-top:10px;
+  color:#294f44;
 }
-
-.food-numbers {
-  color: var(--muted);
-  margin-top: 4px;
-  font-size: .93rem;
-}
-
-.small {
-  font-size: .88rem;
-  color: var(--muted);
-}
-
-.hidden {
-  display: none;
-}
-
-hr {
-  border: 0;
-  border-top: 1px solid var(--line);
-  margin: 14px 0;
-}
-
-@media (max-width: 520px) {
-  .grid2,
-  .summary {
-    grid-template-columns: 1fr;
-  }
+@media(max-width:520px){
+  .grid3{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 
 <body>
 <main>
-
 <h1>My Carb, Protein & Fasting Tracker</h1>
-<div class="sub">Simple daily tracking — carbs, fiber, net carbs, protein & fasting.</div>
+<div class="sub">Track carbs, fiber, net carbs, protein, serving amounts, and fasting.</div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f6f1">
+<title>My Carb, Protein & Fasting Tracker</title>
+<link rel="manifest" href="manifest.json">
 
-<div class="card">
-  <h2>Today's Summary</h2>
+<style>
+:root{
+  --bg:#f7f6f1;
+  --card:#ffffff;
+  --text:#242424;
+  --muted:#6c6c6c;
+  --line:#e5e1d8;
+  --accent:#326b5c;
+  --soft:#eef3f0;
+  --danger:#9b3d3d;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+main{
+  max-width:760px;
+  margin:auto;
+  padding:16px 16px 70px;
+}
+h1{
+  font-size:1.55rem;
+  margin:5px 0;
+}
+.sub{
+  color:var(--muted);
+  margin-bottom:14px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  margin:12px 0;
+  box-shadow:0 2px 8px rgba(0,0,0,.03);
+}
+h2{
+  font-size:1.18rem;
+  margin:0 0 10px;
+}
+.grid2,.summary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.grid3{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+.metric{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+}
+.metric span{
+  font-size:.9rem;
+  color:var(--muted);
+}
+.metric b{
+  display:block;
+  font-size:1.35rem;
+  margin-top:3px;
+}
+label{
+  display:block;
+  font-weight:650;
+  margin:10px 0 5px;
+}
+input,select,button{
+  width:100%;
+  padding:12px;
+  font-size:1rem;
+  border:1px solid #cbc5ba;
+  border-radius:12px;
+  background:#fff;
+}
+button{
+  background:var(--accent);
+  color:#fff;
+  border:0;
+  font-weight:750;
+  margin-top:12px;
+  cursor:pointer;
+}
+button.secondary{
+  background:#ece9e2;
+  color:var(--text);
+}
+button.danger{
+  background:var(--danger);
+}
+.small{
+  font-size:.88rem;
+  color:var(--muted);
+}
+.food-row{
+  border-top:1px solid var(--line);
+  padding:12px 0;
+}
+.food-row:first-child{
+  border-top:0;
+}
+.food-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
+.food-name{
+  font-weight:750;
+}
+.food-details{
+  color:var(--muted);
+  font-size:.92rem;
+  margin-top:4px;
+}
+.delete-button{
+  width:auto;
+  padding:6px 10px;
+  margin:0;
+  background:transparent;
+  color:var(--danger);
+  border:1px solid #d8b7b7;
+}
+.hidden{
+  display:none;
+}
+.notice{
+  background:var(--soft);
+  border-radius:12px;
+  padding:10px;
+  margin-top:10px;
+  color:#294f44;
+}
+@media(max-width:520px){
+  .grid3{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
 
-  <div class="summary">
-    <div class="metric">
-      <span>Total Carbs</span>
-      <b id="totalCarbs">0 g</b>
-    </div>
+<body>
+<main>
+<h1>My Carb, Protein & Fasting Tracker</h1>
+<div class="sub">Track carbs, fiber, net carbs, protein, serving amounts, and fasting.</div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f6f1">
+<title>My Carb, Protein & Fasting Tracker</title>
+<link rel="manifest" href="manifest.json">
 
-    <div class="metric">
-      <span>Fiber</span>
-      <b id="totalFiber">0 g</b>
-    </div>
+<style>
+:root{
+  --bg:#f7f6f1;
+  --card:#ffffff;
+  --text:#242424;
+  --muted:#6c6c6c;
+  --line:#e5e1d8;
+  --accent:#326b5c;
+  --soft:#eef3f0;
+  --danger:#9b3d3d;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+main{
+  max-width:760px;
+  margin:auto;
+  padding:16px 16px 70px;
+}
+h1{
+  font-size:1.55rem;
+  margin:5px 0;
+}
+.sub{
+  color:var(--muted);
+  margin-bottom:14px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  margin:12px 0;
+  box-shadow:0 2px 8px rgba(0,0,0,.03);
+}
+h2{
+  font-size:1.18rem;
+  margin:0 0 10px;
+}
+.grid2,.summary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.grid3{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+.metric{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+}
+.metric span{
+  font-size:.9rem;
+  color:var(--muted);
+}
+.metric b{
+  display:block;
+  font-size:1.35rem;
+  margin-top:3px;
+}
+label{
+  display:block;
+  font-weight:650;
+  margin:10px 0 5px;
+}
+input,select,button{
+  width:100%;
+  padding:12px;
+  font-size:1rem;
+  border:1px solid #cbc5ba;
+  border-radius:12px;
+  background:#fff;
+}
+button{
+  background:var(--accent);
+  color:#fff;
+  border:0;
+  font-weight:750;
+  margin-top:12px;
+  cursor:pointer;
+}
+button.secondary{
+  background:#ece9e2;
+  color:var(--text);
+}
+button.danger{
+  background:var(--danger);
+}
+.small{
+  font-size:.88rem;
+  color:var(--muted);
+}
+.food-row{
+  border-top:1px solid var(--line);
+  padding:12px 0;
+}
+.food-row:first-child{
+  border-top:0;
+}
+.food-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
+.food-name{
+  font-weight:750;
+}
+.food-details{
+  color:var(--muted);
+  font-size:.92rem;
+  margin-top:4px;
+}
+.delete-button{
+  width:auto;
+  padding:6px 10px;
+  margin:0;
+  background:transparent;
+  color:var(--danger);
+  border:1px solid #d8b7b7;
+}
+.hidden{
+  display:none;
+}
+.notice{
+  background:var(--soft);
+  border-radius:12px;
+  padding:10px;
+  margin-top:10px;
+  color:#294f44;
+}
+@media(max-width:520px){
+  .grid3{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
 
-    <div class="metric">
-      <span>Net Carbs</span>
-      <b id="totalNet">0 g</b>
-    </div>
+<body>
+<main>
+<h1>My Carb, Protein & Fasting Tracker</h1>
+<div class="sub">Track carbs, fiber, net carbs, protein, serving amounts, and fasting.</div>
+const foodSelect = document.getElementById("foodSelect");
+const foodName = document.getElementById("foodName");
+const amount = document.getElementById("amount");
+const unit = document.getElementById("unit");
+const carbs = document.getElementById("carbs");
+const fiber = document.getElementById("fiber");
+const protein = document.getElementById("protein");
+const foodTime = document.getElementById("foodTime");
+const libraryNotice = document.getElementById("libraryNotice");
+const foodLog = document.getElementById("foodLog");
 
-    <div class="metric">
-      <span>Protein</span>
-      <b id="totalProtein">0 g</b>
-    </div>
-  </div>
-</div>
-<div class="card">
-  <h2>Add Food</h2>
+let selectedLibraryFood = null;
 
-  <label for="foodName">Food</label>
-  <input id="foodName" type="text" placeholder="Example: eggs, chicken, yogurt">
-
-  <div class="grid2">
-    <div>
-      <label for="carbs">Total Carbs (g)</label>
-      <input id="carbs" type="number" min="0" step="0.1" inputmode="decimal">
-    </div>
-
-    <div>
-      <label for="fiber">Fiber (g)</label>
-      <input id="fiber" type="number" min="0" step="0.1" inputmode="decimal">
-    </div>
-
-    <div>
-      <label for="protein">Protein (g)</label>
-      <input id="protein" type="number" min="0" step="0.1" inputmode="decimal">
-    </div>
-
-    <div>
-      <label for="foodTime">Time</label>
-      <input id="foodTime" type="time">
-    </div>
-  </div>
-
-  <button id="addFoodBtn" type="button">Add Food</button>
-</div>
-
-<div class="card">
-  <h2>Today's Foods</h2>
-  <div id="foodList">
-    <div class="small" id="emptyFoodMessage">No foods entered yet.</div>
-  </div>
-</div>
-
-<div class="card">
-  <h2>Fasting Tracker</h2>
-
-  <div class="grid2">
-    <div>
-      <label for="fastStart">Fast Started</label>
-      <input id="fastStart" type="time">
-    </div>
-
-    <div>
-      <label for="fastEnd">Fast Ended</label>
-      <input id="fastEnd" type="time">
-    </div>
-  </div>
-
-  <button id="saveFastBtn" type="button">Save Fasting Times</button>
-
-  <div id="fastResult" class="small" style="margin-top:10px;">
-    No fasting times saved yet.
-  </div>
-</div>
-<div class="card">
-  <h2>Daily Controls</h2>
-
-  <button id="clearTodayBtn" class="danger" type="button">
-    Clear Today's Foods
-  </button>
-</div>
-
-</main>
-
-<script>
-const STORAGE_KEY = "carbTrackerFoods";
-const FAST_KEY = "carbTrackerFast";
-
-let foods = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-
-function numberValue(id) {
-  const value = parseFloat(document.getElementById(id).value);
-  return Number.isFinite(value) ? value : 0;
+function todayKey(){
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth()+1).padStart(2,"0");
+  const day = String(now.getDate()).padStart(2,"0");
+  return `carbTracker-${year}-${month}-${day}`;
 }
 
-function formatNumber(value) {
-  return Number(value.toFixed(1));
+function round1(number){
+  return Math.round((Number(number) || 0) * 10) / 10;
 }
 
-function saveFoods() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(foods));
+function currentTime(){
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
 }
 
-function renderFoods() {
-  const foodList = document.getElementById("foodList");
+function loadFoods(){
+  try{
+    return JSON.parse(localStorage.getItem(todayKey())) || [];
+  }catch(error){
+    return [];
+  }
+}
+
+function saveFoods(foods){
+  localStorage.setItem(todayKey(),JSON.stringify(foods));
+}
+
+function fillFoodLibrary(){
+  foodLibrary.forEach((food,index)=>{
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = food.name;
+    foodSelect.appendChild(option);
+  });
+}
+
+function unitLabel(value,number){
+  const singular = {
+    serving:"serving",
+    oz:"ounce",
+    g:"gram",
+    cup:"cup",
+    tbsp:"tablespoon",
+    tsp:"teaspoon",
+    piece:"piece",
+    slice:"slice"
+  };
+  const plural = {
+    serving:"servings",
+    oz:"ounces",
+    g:"grams",
+    cup:"cups",
+    tbsp:"tablespoons",
+    tsp:"teaspoons",
+    piece:"pieces",
+    slice:"slices"
+  };
+  return Number(number) === 1 ? singular[value] : plural[value];
+}
+
+function calculateLibraryNutrition(){
+  if(!selectedLibraryFood) return;
+
+  const enteredAmount = Number(amount.value);
+  if(!enteredAmount || enteredAmount < 0) return;
+
+  const multiplier = enteredAmount / selectedLibraryFood.baseAmount;
+
+  carbs.value = round1(selectedLibraryFood.carbs * multiplier);
+  fiber.value = round1(selectedLibraryFood.fiber * multiplier);
+  protein.value = round1(selectedLibraryFood.protein * multiplier);
+
+  libraryNotice.textContent =
+    `Calculated from ${selectedLibraryFood.baseAmount} ` +
+    `${unitLabel(selectedLibraryFood.baseUnit,selectedLibraryFood.baseAmount)}.`;
+}
+
+foodSelect.addEventListener("change",()=>{
+  if(foodSelect.value === ""){
+    selectedLibraryFood = null;
+    libraryNotice.classList.add("hidden");
+    return;
+  }
+
+  selectedLibraryFood = foodLibrary[Number(foodSelect.value)];
+  foodName.value = selectedLibraryFood.name;
+  amount.value = selectedLibraryFood.baseAmount;
+  unit.value = selectedLibraryFood.baseUnit;
+  libraryNotice.classList.remove("hidden");
+  calculateLibraryNutrition();
+});
+
+amount.addEventListener("input",calculateLibraryNutrition);
+
+unit.addEventListener("change",()=>{
+  if(selectedLibraryFood && unit.value !== selectedLibraryFood.baseUnit){
+    selectedLibraryFood = null;
+    foodSelect.value = "";
+    libraryNotice.textContent =
+      "The unit was changed. Please enter the nutrition numbers manually.";
+  }else{
+    calculateLibraryNutrition();
+  }
+});
+
+function clearFoodForm(){
+  foodSelect.value = "";
+  foodName.value = "";
+  amount.value = "";
+  unit.value = "serving";
+  carbs.value = "";
+  fiber.value = "";
+  protein.value = "";
+  foodTime.value = currentTime();
+  selectedLibraryFood = null;
+  libraryNotice.classList.add("hidden");
+  libraryNotice.textContent = "";
+}
+  const foodSelect = document.getElementById("foodSelect");
+const foodName = document.getElementById("foodName");
+const amount = document.getElementById("amount");
+const unit = document.getElementById("unit");
+const carbs = document.getElementById("carbs");
+const fiber = document.getElementById("fiber");
+const protein = document.getElementById("protein");
+const foodTime = document.getElementById("foodTime");
+const libraryNotice = document.getElementById("libraryNotice");
+const foodLog = document.getElementById("foodLog");
+
+let selectedLibraryFood = null;
+
+function todayKey(){
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth()+1).padStart(2,"0");
+  const day = String(now.getDate()).padStart(2,"0");
+  return `carbTracker-${year}-${month}-${day}`;
+}
+
+function round1(number){
+  return Math.round((Number(number) || 0) * 10) / 10;
+}
+
+function currentTime(){
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+}
+
+function loadFoods(){
+  try{
+    return JSON.parse(localStorage.getItem(todayKey())) || [];
+  }catch(error){
+    return [];
+  }
+}
+
+function saveFoods(foods){
+  localStorage.setItem(todayKey(),JSON.stringify(foods));
+}
+
+function fillFoodLibrary(){
+  foodLibrary.forEach((food,index)=>{
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = food.name;
+    foodSelect.appendChild(option);
+  });
+}
+
+function unitLabel(value,number){
+  const singular = {
+    serving:"serving",
+    oz:"ounce",
+    g:"gram",
+    cup:"cup",
+    tbsp:"tablespoon",
+    tsp:"teaspoon",
+    piece:"piece",
+    slice:"slice"
+  };
+  const plural = {
+    serving:"servings",
+    oz:"ounces",
+    g:"grams",
+    cup:"cups",
+    tbsp:"tablespoons",
+    tsp:"teaspoons",
+    piece:"pieces",
+    slice:"slices"
+  };
+  return Number(number) === 1 ? singular[value] : plural[value];
+}
+
+function calculateLibraryNutrition(){
+  if(!selectedLibraryFood) return;
+
+  const enteredAmount = Number(amount.value);
+  if(!enteredAmount || enteredAmount < 0) return;
+
+  const multiplier = enteredAmount / selectedLibraryFood.baseAmount;
+
+  carbs.value = round1(selectedLibraryFood.carbs * multiplier);
+  fiber.value = round1(selectedLibraryFood.fiber * multiplier);
+  protein.value = round1(selectedLibraryFood.protein * multiplier);
+
+  libraryNotice.textContent =
+    `Calculated from ${selectedLibraryFood.baseAmount} ` +
+    `${unitLabel(selectedLibraryFood.baseUnit,selectedLibraryFood.baseAmount)}.`;
+}
+
+foodSelect.addEventListener("change",()=>{
+  if(foodSelect.value === ""){
+    selectedLibraryFood = null;
+    libraryNotice.classList.add("hidden");
+    return;
+  }
+
+  selectedLibraryFood = foodLibrary[Number(foodSelect.value)];
+  foodName.value = selectedLibraryFood.name;
+  amount.value = selectedLibraryFood.baseAmount;
+  unit.value = selectedLibraryFood.baseUnit;
+  libraryNotice.classList.remove("hidden");
+  calculateLibraryNutrition();
+});
+
+amount.addEventListener("input",calculateLibraryNutrition);
+
+unit.addEventListener("change",()=>{
+  if(selectedLibraryFood && unit.value !== selectedLibraryFood.baseUnit){
+    selectedLibraryFood = null;
+    foodSelect.value = "";
+    libraryNotice.textContent =
+      "The unit was changed. Please enter the nutrition numbers manually.";
+  }else{
+    calculateLibraryNutrition();
+  }
+});
+
+function clearFoodForm(){
+  foodSelect.value = "";
+  foodName.value = "";
+  amount.value = "";
+  unit.value = "serving";
+  carbs.value = "";
+  fiber.value = "";
+  protein.value = "";
+  foodTime.value = currentTime();
+  selectedLibraryFood = null;
+  libraryNotice.classList.add("hidden");
+  libraryNotice.textContent = "";
+}
+    const foodSelect = document.getElementById("foodSelect");
+const foodName = document.getElementById("foodName");
+const amount = document.getElementById("amount");
+const unit = document.getElementById("unit");
+const carbs = document.getElementById("carbs");
+const fiber = document.getElementById("fiber");
+const protein = document.getElementById("protein");
+const foodTime = document.getElementById("foodTime");
+const libraryNotice = document.getElementById("libraryNotice");
+const foodLog = document.getElementById("foodLog");
+
+let selectedLibraryFood = null;
+
+function todayKey(){
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth()+1).padStart(2,"0");
+  const day = String(now.getDate()).padStart(2,"0");
+  return `carbTracker-${year}-${month}-${day}`;
+}
+
+function round1(number){
+  return Math.round((Number(number) || 0) * 10) / 10;
+}
+
+function currentTime(){
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+}
+
+function loadFoods(){
+  try{
+    return JSON.parse(localStorage.getItem(todayKey())) || [];
+  }catch(error){
+    return [];
+  }
+}
+
+function saveFoods(foods){
+  localStorage.setItem(todayKey(),JSON.stringify(foods));
+}
+
+function fillFoodLibrary(){
+  foodLibrary.forEach((food,index)=>{
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = food.name;
+    foodSelect.appendChild(option);
+  });
+}
+
+function unitLabel(value,number){
+  const singular = {
+    serving:"serving",
+    oz:"ounce",
+    g:"gram",
+    cup:"cup",
+    tbsp:"tablespoon",
+    tsp:"teaspoon",
+    piece:"piece",
+    slice:"slice"
+  };
+  const plural = {
+    serving:"servings",
+    oz:"ounces",
+    g:"grams",
+    cup:"cups",
+    tbsp:"tablespoons",
+    tsp:"teaspoons",
+    piece:"pieces",
+    slice:"slices"
+  };
+  return Number(number) === 1 ? singular[value] : plural[value];
+}
+
+function calculateLibraryNutrition(){
+  if(!selectedLibraryFood) return;
+
+  const enteredAmount = Number(amount.value);
+  if(!enteredAmount || enteredAmount < 0) return;
+
+  const multiplier = enteredAmount / selectedLibraryFood.baseAmount;
+
+  carbs.value = round1(selectedLibraryFood.carbs * multiplier);
+  fiber.value = round1(selectedLibraryFood.fiber * multiplier);
+  protein.value = round1(selectedLibraryFood.protein * multiplier);
+
+  libraryNotice.textContent =
+    `Calculated from ${selectedLibraryFood.baseAmount} ` +
+    `${unitLabel(selectedLibraryFood.baseUnit,selectedLibraryFood.baseAmount)}.`;
+}
+
+foodSelect.addEventListener("change",()=>{
+  if(foodSelect.value === ""){
+    selectedLibraryFood = null;
+    libraryNotice.classList.add("hidden");
+    return;
+  }
+
+  selectedLibraryFood = foodLibrary[Number(foodSelect.value)];
+  foodName.value = selectedLibraryFood.name;
+  amount.value = selectedLibraryFood.baseAmount;
+  unit.value = selectedLibraryFood.baseUnit;
+  libraryNotice.classList.remove("hidden");
+  calculateLibraryNutrition();
+});
+
+amount.addEventListener("input",calculateLibraryNutrition);
+
+unit.addEventListener("change",()=>{
+  if(selectedLibraryFood && unit.value !== selectedLibraryFood.baseUnit){
+    selectedLibraryFood = null;
+    foodSelect.value = "";
+    libraryNotice.textContent =
+      "The unit was changed. Please enter the nutrition numbers manually.";
+  }else{
+    calculateLibraryNutrition();
+  }
+});
+
+function clearFoodForm(){
+  foodSelect.value = "";
+  foodName.value = "";
+  amount.value = "";
+  unit.value = "serving";
+  carbs.value = "";
+  fiber.value = "";
+  protein.value = "";
+  foodTime.value = currentTime();
+  selectedLibraryFood = null;
+  libraryNotice.classList.add("hidden");
+  libraryNotice.textContent = "";
+}
+    const foodSelect = document.getElementById("foodSelect");
+const foodName = document.getElementById("foodName");
+const amount = document.getElementById("amount");
+const unit = document.getElementById("unit");
+const carbs = document.getElementById("carbs");
+const fiber = document.getElementById("fiber");
+const protein = document.getElementById("protein");
+const foodTime = document.getElementById("foodTime");
+const libraryNotice = document.getElementById("libraryNotice");
+const foodLog = document.getElementById("foodLog");
+
+let selectedLibraryFood = null;
+
+function todayKey(){
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth()+1).padStart(2,"0");
+  const day = String(now.getDate()).padStart(2,"0");
+  return `carbTracker-${year}-${month}-${day}`;
+}
+
+function round1(number){
+  return Math.round((Number(number) || 0) * 10) / 10;
+}
+
+function currentTime(){
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+}
+
+function loadFoods(){
+  try{
+    return JSON.parse(localStorage.getItem(todayKey())) || [];
+  }catch(error){
+    return [];
+  }
+}
+
+function saveFoods(foods){
+  localStorage.setItem(todayKey(),JSON.stringify(foods));
+}
+
+function fillFoodLibrary(){
+  foodLibrary.forEach((food,index)=>{
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = food.name;
+    foodSelect.appendChild(option);
+  });
+}
+
+function unitLabel(value,number){
+  const singular = {
+    serving:"serving",
+    oz:"ounce",
+    g:"gram",
+    cup:"cup",
+    tbsp:"tablespoon",
+    tsp:"teaspoon",
+    piece:"piece",
+    slice:"slice"
+  };
+  const plural = {
+    serving:"servings",
+    oz:"ounces",
+    g:"grams",
+    cup:"cups",
+    tbsp:"tablespoons",
+    tsp:"teaspoons",
+    piece:"pieces",
+    slice:"slices"
+  };
+  return Number(number) === 1 ? singular[value] : plural[value];
+}
+
+function calculateLibraryNutrition(){
+  if(!selectedLibraryFood) return;
+
+  const enteredAmount = Number(amount.value);
+  if(!enteredAmount || enteredAmount < 0) return;
+
+  const multiplier = enteredAmount / selectedLibraryFood.baseAmount;
+
+  carbs.value = round1(selectedLibraryFood.carbs * multiplier);
+  fiber.value = round1(selectedLibraryFood.fiber * multiplier);
+  protein.value = round1(selectedLibraryFood.protein * multiplier);
+
+  libraryNotice.textContent =
+    `Calculated from ${selectedLibraryFood.baseAmount} ` +
+    `${unitLabel(selectedLibraryFood.baseUnit,selectedLibraryFood.baseAmount)}.`;
+}
+
+foodSelect.addEventListener("change",()=>{
+  if(foodSelect.value === ""){
+    selectedLibraryFood = null;
+    libraryNotice.classList.add("hidden");
+    return;
+  }
+
+  selectedLibraryFood = foodLibrary[Number(foodSelect.value)];
+  foodName.value = selectedLibraryFood.name;
+  amount.value = selectedLibraryFood.baseAmount;
+  unit.value = selectedLibraryFood.baseUnit;
+  libraryNotice.classList.remove("hidden");
+  calculateLibraryNutrition();
+});
+
+amount.addEventListener("input",calculateLibraryNutrition);
+
+unit.addEventListener("change",()=>{
+  if(selectedLibraryFood && unit.value !== selectedLibraryFood.baseUnit){
+    selectedLibraryFood = null;
+    foodSelect.value = "";
+    libraryNotice.textContent =
+      "The unit was changed. Please enter the nutrition numbers manually.";
+  }else{
+    calculateLibraryNutrition();
+  }
+});
+
+function clearFoodForm(){
+  foodSelect.value = "";
+  foodName.value = "";
+  amount.value = "";
+  unit.value = "serving";
+  carbs.value = "";
+  fiber.value = "";
+  protein.value = "";
+  foodTime.value = currentTime();
+  selectedLibraryFood = null;
+  libraryNotice.classList.add("hidden");
+  libraryNotice.textContent = "";
+}
+    const foodSelect = document.getElementById("foodSelect");
+const foodName = document.getElementById("foodName");
+const amount = document.getElementById("amount");
+const unit = document.getElementById("unit");
+const carbs = document.getElementById("carbs");
+const fiber = document.getElementById("fiber");
+const protein = document.getElementById("protein");
+const foodTime = document.getElementById("foodTime");
+const libraryNotice = document.getElementById("libraryNotice");
+const foodLog = document.getElementById("foodLog");
+
+let selectedLibraryFood = null;
+
+function todayKey(){
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth()+1).padStart(2,"0");
+  const day = String(now.getDate()).padStart(2,"0");
+  return `carbTracker-${year}-${month}-${day}`;
+}
+
+function round1(number){
+  return Math.round((Number(number) || 0) * 10) / 10;
+}
+
+function currentTime(){
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+}
+
+function loadFoods(){
+  try{
+    return JSON.parse(localStorage.getItem(todayKey())) || [];
+  }catch(error){
+    return [];
+  }
+}
+
+function saveFoods(foods){
+  localStorage.setItem(todayKey(),JSON.stringify(foods));
+}
+
+function fillFoodLibrary(){
+  foodLibrary.forEach((food,index)=>{
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = food.name;
+    foodSelect.appendChild(option);
+  });
+}
+
+function unitLabel(value,number){
+  const singular = {
+    serving:"serving",
+    oz:"ounce",
+    g:"gram",
+    cup:"cup",
+    tbsp:"tablespoon",
+    tsp:"teaspoon",
+    piece:"piece",
+    slice:"slice"
+  };
+  const plural = {
+    serving:"servings",
+    oz:"ounces",
+    g:"grams",
+    cup:"cups",
+    tbsp:"tablespoons",
+    tsp:"teaspoons",
+    piece:"pieces",
+    slice:"slices"
+  };
+  return Number(number) === 1 ? singular[value] : plural[value];
+}
+
+function calculateLibraryNutrition(){
+  if(!selectedLibraryFood) return;
+
+  const enteredAmount = Number(amount.value);
+  if(!enteredAmount || enteredAmount < 0) return;
+
+  const multiplier = enteredAmount / selectedLibraryFood.baseAmount;
+
+  carbs.value = round1(selectedLibraryFood.carbs * multiplier);
+  fiber.value = round1(selectedLibraryFood.fiber * multiplier);
+  protein.value = round1(selectedLibraryFood.protein * multiplier);
+
+  libraryNotice.textContent =
+    `Calculated from ${selectedLibraryFood.baseAmount} ` +
+    `${unitLabel(selectedLibraryFood.baseUnit,selectedLibraryFood.baseAmount)}.`;
+}
+
+foodSelect.addEventListener("change",()=>{
+  if(foodSelect.value === ""){
+    selectedLibraryFood = null;
+    libraryNotice.classList.add("hidden");
+    return;
+  }
+
+  selectedLibraryFood = foodLibrary[Number(foodSelect.value)];
+  foodName.value = selectedLibraryFood.name;
+  amount.value = selectedLibraryFood.baseAmount;
+  unit.value = selectedLibraryFood.baseUnit;
+  libraryNotice.classList.remove("hidden");
+  calculateLibraryNutrition();
+});
+
+amount.addEventListener("input",calculateLibraryNutrition);
+
+unit.addEventListener("change",()=>{
+  if(selectedLibraryFood && unit.value !== selectedLibraryFood.baseUnit){
+    selectedLibraryFood = null;
+    foodSelect.value = "";
+    libraryNotice.textContent =
+      "The unit was changed. Please enter the nutrition numbers manually.";
+  }else{
+    calculateLibraryNutrition();
+  }
+});
+
+function clearFoodForm(){
+  foodSelect.value = "";
+  foodName.value = "";
+  amount.value = "";
+  unit.value = "serving";
+  carbs.value = "";
+  fiber.value = "";
+  protein.value = "";
+  foodTime.value = currentTime();
+  selectedLibraryFood = null;
+  libraryNotice.classList.add("hidden");
+  libraryNotice.textContent = "";
+}
+    function renderFoods(){
+  const foods = loadFoods();
 
   let totalCarbs = 0;
   let totalFiber = 0;
   let totalProtein = 0;
 
-  foodList.innerHTML = "";
-
-  if (foods.length === 0) {
-    foodList.innerHTML =
-      '<div class="small" id="emptyFoodMessage">No foods entered yet.</div>';
-  }
-
-  foods.forEach((food, index) => {
-    totalCarbs += food.carbs;
-    totalFiber += food.fiber;
-    totalProtein += food.protein;
-
-    const netCarbs = Math.max(0, food.carbs - food.fiber);
-
-    const item = document.createElement("div");
-    item.className = "food-item";
-
-    item.innerHTML = `
-      <div class="food-top">
-        <div class="food-name">${food.name}</div>
-        <div class="food-time">${food.time || ""}</div>
-      </div>
-
-      <div class="food-numbers">
-        Carbs: ${formatNumber(food.carbs)} g ·
-        Fiber: ${formatNumber(food.fiber)} g ·
-        Net: ${formatNumber(netCarbs)} g ·
-        Protein: ${formatNumber(food.protein)} g
-      </div>
-
-      <button
-        class="secondary"
-        type="button"
-        onclick="deleteFood(${index})">
-        Delete
-      </button>
-    `;
-
-    foodList.appendChild(item);
+  foods.forEach(food=>{
+    totalCarbs += Number(food.carbs) || 0;
+    totalFiber += Number(food.fiber) || 0;
+    totalProtein += Number(food.protein) || 0;
   });
 
-  const totalNet = Math.max(0, totalCarbs - totalFiber);
+  const totalNet = Math.max(0,totalCarbs-totalFiber);
 
   document.getElementById("totalCarbs").textContent =
-    formatNumber(totalCarbs) + " g";
-
+    `${round1(totalCarbs)} g`;
   document.getElementById("totalFiber").textContent =
-    formatNumber(totalFiber) + " g";
-
+    `${round1(totalFiber)} g`;
   document.getElementById("totalNet").textContent =
-    formatNumber(totalNet) + " g";
-
+    `${round1(totalNet)} g`;
   document.getElementById("totalProtein").textContent =
-    formatNumber(totalProtein) + " g";
-}
- function addFood() {
-  const name = document.getElementById("foodName").value.trim();
-  const carbs = numberValue("carbs");
-  const fiber = numberValue("fiber");
-  const protein = numberValue("protein");
-  const time = document.getElementById("foodTime").value;
+    `${round1(totalProtein)} g`;
 
-  if (!name) {
-    alert("Please enter a food name.");
+  if(foods.length === 0){
+    foodLog.innerHTML =
+      '<div class="small">No food recorded yet today.</div>';
     return;
   }
+
+  foodLog.innerHTML = "";
+
+  foods
+    .slice()
+    .reverse()
+    .forEach(food=>{
+      const originalIndex = foods.findIndex(item=>item.id === food.id);
+      const netCarbs = Math.max(
+        0,
+        Number(food.carbs)-Number(food.fiber)
+      );
+
+      const row = document.createElement("div");
+      row.className = "food-row";
+
+      const top = document.createElement("div");
+      top.className = "food-top";
+
+      const information = document.createElement("div");
+
+      const name = document.createElement("div");
+      name.className = "food-name";
+      name.textContent =
+        `${food.time || ""} ${food.name}`.trim();
+
+      const serving = document.createElement("div");
+      serving.className = "food-details";
+      serving.textContent =
+        `${food.amount} ${unitLabel(food.unit,food.amount)}`;
+
+      const nutrition = document.createElement("div");
+      nutrition.className = "food-details";
+      nutrition.textContent =
+        `Carbs ${round1(food.carbs)} g • ` +
+        `Fiber ${round1(food.fiber)} g • ` +
+        `Net ${round1(netCarbs)} g • ` +
+        `Protein ${round1(food.protein)} g`;
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "delete-button";
+      deleteButton.textContent = "Delete";
+      deleteButton.addEventListener("click",()=>{
+        const updatedFoods = loadFoods();
+        updatedFoods.splice(originalIndex,1);
+        saveFoods(updatedFoods);
+        renderFoods();
+      });
+
+      information.appendChild(name);
+      information.appendChild(serving);
+      information.appendChild(nutrition);
+      top.appendChild(information);
+      top.appendChild(deleteButton);
+      row.appendChild(top);
+      foodLog.appendChild(row);
+    });
+}
+
+document.getElementById("addFoodButton").addEventListener("click",()=>{
+  const enteredName = foodName.value.trim();
+  const enteredAmount = Number(amount.value);
+
+  if(!enteredName){
+    alert("Please enter or choose a food.");
+    return;
+  }
+
+  if(!enteredAmount || enteredAmount <= 0){
+    alert("Please enter the amount you ate.");
+    return;
+  }
+
+  const foods = loadFoods();
 
   foods.push({
-    name: name,
-    carbs: carbs,
-    fiber: fiber,
-    protein: protein,
-    time: time
+    id:Date.now(),
+    name:enteredName,
+    amount:enteredAmount,
+    unit:unit.value,
+    carbs:round1(carbs.value),
+    fiber:round1(fiber.value),
+    protein:round1(protein.value),
+    time:foodTime.value || currentTime()
   });
 
-  saveFoods();
+  saveFoods(foods);
   renderFoods();
+  clearFoodForm();
+});
 
-  document.getElementById("foodName").value = "";
-  document.getElementById("carbs").value = "";
-  document.getElementById("fiber").value = "";
-  document.getElementById("protein").value = "";
-  document.getElementById("foodTime").value = "";
-}
+document
+  .getElementById("clearFoodButton")
+  .addEventListener("click",clearFoodForm);
 
-function deleteFood(index) {
-  foods.splice(index, 1);
-  saveFoods();
-  renderFoods();
-}
-
-function clearToday() {
-  if (!confirm("Clear all of today's foods?")) {
-    return;
-  }
-
-  foods = [];
-  saveFoods();
-  renderFoods();
-}
-
-function saveFast() {
-  const start = document.getElementById("fastStart").value;
-  const end = document.getElementById("fastEnd").value;
-
-  const fasting = {
-    start: start,
-    end: end
-  };
-
-  localStorage.setItem(FAST_KEY, JSON.stringify(fasting));
-  showFast();
-}
-
-function showFast() {
-  const saved = JSON.parse(localStorage.getItem(FAST_KEY) || "null");
-  const result = document.getElementById("fastResult");
-
-  if (!saved || (!saved.start && !saved.end)) {
-    result.textContent = "No fasting times saved yet.";
-    return;
-  }
-
-  document.getElementById("fastStart").value = saved.start || "";
-  document.getElementById("fastEnd").value = saved.end || "";
-
-  if (saved.start && saved.end) {
-    const startParts = saved.start.split(":");
-    const endParts = saved.end.split(":");
-
-    let startMinutes =
-      Number(startParts[0]) * 60 + Number(startParts[1]);
-
-    let endMinutes =
-      Number(endParts[0]) * 60 + Number(endParts[1]);
-
-    if (endMinutes < startMinutes) {
-      endMinutes += 24 * 60;
+document
+  .getElementById("clearDayButton")
+  .addEventListener("click",()=>{
+    if(confirm("Clear all foods recorded today?")){
+      localStorage.removeItem(todayKey());
+      renderFoods();
     }
+  });
+    function renderFoods(){
+  const foods = loadFoods();
 
-    const duration = endMinutes - startMinutes;
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
+  let totalCarbs = 0;
+  let totalFiber = 0;
+  let totalProtein = 0;
 
-    result.textContent =
-      "Fast length: " + hours + " hr " + minutes + " min";
-  } else {
-    result.textContent = "Fasting times saved.";
+  foods.forEach(food=>{
+    totalCarbs += Number(food.carbs) || 0;
+    totalFiber += Number(food.fiber) || 0;
+    totalProtein += Number(food.protein) || 0;
+  });
+
+  const totalNet = Math.max(0,totalCarbs-totalFiber);
+
+  document.getElementById("totalCarbs").textContent =
+    `${round1(totalCarbs)} g`;
+  document.getElementById("totalFiber").textContent =
+    `${round1(totalFiber)} g`;
+  document.getElementById("totalNet").textContent =
+    `${round1(totalNet)} g`;
+  document.getElementById("totalProtein").textContent =
+    `${round1(totalProtein)} g`;
+
+  if(foods.length === 0){
+    foodLog.innerHTML =
+      '<div class="small">No food recorded yet today.</div>';
+    return;
+  }
+
+  foodLog.innerHTML = "";
+
+  foods
+    .slice()
+    .reverse()
+    .forEach(food=>{
+      const originalIndex = foods.findIndex(item=>item.id === food.id);
+      const netCarbs = Math.max(
+        0,
+        Number(food.carbs)-Number(food.fiber)
+      );
+
+      const row = document.createElement("div");
+      row.className = "food-row";
+
+      const top = document.createElement("div");
+      top.className = "food-top";
+
+      const information = document.createElement("div");
+
+      const name = document.createElement("div");
+      name.className = "food-name";
+      name.textContent =
+        `${food.time || ""} ${food.name}`.trim();
+
+      const serving = document.createElement("div");
+      serving.className = "food-details";
+      serving.textContent =
+        `${food.amount} ${unitLabel(food.unit,food.amount)}`;
+
+      const nutrition = document.createElement("div");
+      nutrition.className = "food-details";
+      nutrition.textContent =
+        `Carbs ${round1(food.carbs)} g • ` +
+        `Fiber ${round1(food.fiber)} g • ` +
+        `Net ${round1(netCarbs)} g • ` +
+        `Protein ${round1(food.protein)} g`;
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "delete-button";
+      deleteButton.textContent = "Delete";
+      deleteButton.addEventListener("click",()=>{
+        const updatedFoods = loadFoods();
+        updatedFoods.splice(originalIndex,1);
+        saveFoods(updatedFoods);
+        renderFoods();
+      });
+
+      information.appendChild(name);
+      information.appendChild(serving);
+      information.appendChild(nutrition);
+      top.appendChild(information);
+      top.appendChild(deleteButton);
+      row.appendChild(top);
+      foodLog.appendChild(row);
+    });
+}
+
+document.getElementById("addFoodButton").addEventListener("click",()=>{
+  const enteredName = foodName.value.trim();
+  const enteredAmount = Number(amount.value);
+
+  if(!enteredName){
+    alert("Please enter or choose a food.");
+    return;
+  }
+
+  if(!enteredAmount || enteredAmount <= 0){
+    alert("Please enter the amount you ate.");
+    return;
+  }
+
+  const foods = loadFoods();
+
+  foods.push({
+    id:Date.now(),
+    name:enteredName,
+    amount:enteredAmount,
+    unit:unit.value,
+    carbs:round1(carbs.value),
+    fiber:round1(fiber.value),
+    protein:round1(protein.value),
+    time:foodTime.value || currentTime()
+  });
+
+  saveFoods(foods);
+  renderFoods();
+  clearFoodForm();
+});
+
+document
+  .getElementById("clearFoodButton")
+  .addEventListener("click",clearFoodForm);
+
+document
+  .getElementById("clearDayButton")
+  .addEventListener("click",()=>{$
+    if(confirm("Clear all foods recorded today?")){
+      localStorage.removeItem(todayKey());
+      renderFoods();
+    }
+  });
+    const fastStart = document.getElementById("fastStart");
+const fastEnd = document.getElementById("fastEnd");
+const fastingStatus = document.getElementById("fastingStatus");
+
+function dateTimeInputValue(date){
+  const adjusted = new Date(date.getTime()-date.getTimezoneOffset()*60000);
+  return adjusted.toISOString().slice(0,16);
+}
+
+function saveFast(){
+  localStorage.setItem("fastStart",fastStart.value);
+  localStorage.setItem("fastEnd",fastEnd.value);
+  renderFast();
+}
+
+function renderFast(){
+  const savedStart = localStorage.getItem("fastStart") || "";
+  const savedEnd = localStorage.getItem("fastEnd") || "";
+
+  fastStart.value = savedStart;
+  fastEnd.value = savedEnd;
+
+  if(!savedStart){
+    fastingStatus.textContent = "No fast recorded.";
+    return;
+  }
+
+  const start = new Date(savedStart);
+  const finish = savedEnd ? new Date(savedEnd) : new Date();
+  const hours = Math.max(0,(finish-start)/3600000);
+
+  if(savedEnd){
+    fastingStatus.textContent =
+      `Completed fast: ${hours.toFixed(1)} hours.`;
+  }else{
+    fastingStatus.textContent =
+      `Fasting now: approximately ${hours.toFixed(1)} hours so far.`;
   }
 }
- document.getElementById("addFoodBtn").addEventListener("click", addFood);
 
-document.getElementById("clearTodayBtn").addEventListener("click", clearToday);
+document
+  .getElementById("startFastButton")
+  .addEventListener("click",()=>{
+    fastStart.value = dateTimeInputValue(new Date());
+    fastEnd.value = "";
+    saveFast();
+  });
 
-document.getElementById("saveFastBtn").addEventListener("click", saveFast);
+document
+  .getElementById("endFastButton")
+  .addEventListener("click",()=>{
+    if(!fastStart.value){
+      alert("Please start the fast first.");
+      return;
+    }
+    fastEnd.value = dateTimeInputValue(new Date());
+    saveFast();
+  });
 
+fastStart.addEventListener("change",saveFast);
+fastEnd.addEventListener("change",saveFast);
+
+fillFoodLibrary();
+foodTime.value = currentTime();
 renderFoods();
-showFast();
+renderFast();
 
+setInterval(()=>{
+  if(localStorage.getItem("fastStart") &&
+     !localStorage.getItem("fastEnd")){
+    renderFast();
+  }
+},60000);
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./service-worker.js");
+  });
+}
 </script>
 </body>
 </html>
